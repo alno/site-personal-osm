@@ -1,5 +1,7 @@
 source :rubygems
 
-gem 'sinatra'
+gem 'rack-proxy'
+gem 'rack'
+
 gem 'unicorn'
 gem 'pg'
