@@ -131,7 +131,7 @@ module Importers
         if @ctx[:lat] && @ctx[:lon]
           @ctx[:geometry] = "POINT(#{@ctx[:lon]} #{@ctx[:lat]})"
         elsif @ctx[:Lat1] && @ctx[:Lon1] && @ctx[:Lat2] && @ctx[:Lon2]
-          @ctx[:geometry] = "POLYGON(#{@ctx[:Lat1]} #{@ctx[:Lon1]},#{@ctx[:Lat2]} #{@ctx[:Lon1]},#{@ctx[:Lat2]} #{@ctx[:Lon2]},#{@ctx[:Lat1]} #{@ctx[:Lon2]},#{@ctx[:Lat1]} #{@ctx[:Lon1]})"
+          @ctx[:geometry] = "POLYGON((#{@ctx[:Lat1]} #{@ctx[:Lon1]},#{@ctx[:Lat2]} #{@ctx[:Lon1]},#{@ctx[:Lat2]} #{@ctx[:Lon2]},#{@ctx[:Lat1]} #{@ctx[:Lon2]},#{@ctx[:Lat1]} #{@ctx[:Lon1]}))"
         else
           raise StandardError.new("Error without geometry!")
         end
