@@ -11,6 +11,10 @@ role :web, "alno.name"
 role :app, "alno.name"
 role :db,  "alno.name", :primary => true
 
+set :whenever_command, "bundle exec whenever"
+set :whenever_identifier, defer { application }
+set :whenever_options, :roles => :db, :only => { :primary => true }
+
 require 'bundler/capistrano'
 require 'whenever/capistrano'
 
