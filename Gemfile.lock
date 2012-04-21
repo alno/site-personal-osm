@@ -2,11 +2,16 @@ GEM
   remote: http://rubygems.org/
   specs:
     kgio (2.7.4)
+    oj (1.2.5)
+    ox (1.5.5)
     pg (0.13.2)
     rack (1.4.1)
     rack-proxy (0.3.7)
       rack
     raindrops (0.8.0)
+    rake (0.9.2.2)
+    rgeo (0.3.11)
+    sequel (3.34.1)
     unicorn (4.3.0)
       kgio (~> 2.6)
       rack
@@ -16,7 +21,12 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  oj
+  ox
   pg
   rack
   rack-proxy
+  rake
+  rgeo
+  sequel
   unicorn
