@@ -4,7 +4,7 @@ class ValidatorFrontend
 
   def initialize(filter = {})
     @filter = filter
-    @ds = DB[:osm_errors].filter(@filter).select(:id, :type, :text).select_append{ st_asgeojson(geometry).as(:geometry) }.order('source, source_id')
+    @ds = DB[:osm_errors].filter(@filter).select(:id, :type, :text).select_append{ st_asgeojson(geometry).as(:geometry) }.order(:source, :source_id)
   end
 
   def call(env)
