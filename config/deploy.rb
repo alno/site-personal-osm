@@ -14,7 +14,8 @@ role :db,  "alno.name", :primary => true
 require 'bundler/capistrano'
 
 after "deploy:update_code", roles => :app do
-  run "ln -s #{shared_path}/config/unicorn.rb #{release_path}/config/unicorn.rb"
+  run "ln -nfs #{shared_path}/config/unicorn.rb #{release_path}/config/unicorn.rb"
+  run "ln -nfs #{shared_path}/config/database.yml #{release_path}/config/database.yml"
 end
 
 namespace :deploy do
