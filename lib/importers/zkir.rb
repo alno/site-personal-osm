@@ -118,8 +118,8 @@ module Importers
           @ctx[:city] = Iconv.conv('UTF8','CP1251', value)
         elsif @stack.last == :NumberOfRoads
           @ctx[:num_roads] = value.to_i
-        elsif [:lat, :lon, :Lat1, :Lon1, :Lat2, :Lon2].include? @stack.last
-          @ctx[@stack.last] = value.to_f
+        elsif [:lat, :lon, :Lat, :Lon, :Lat1, :Lon1, :Lat2, :Lon2].include? @stack.last
+          @ctx[@stack.last.to_s.downcase.to_sym] = value.to_f
         else
           #puts "Unknown text value in #{@stack.inspect}: #{value}"
         end
@@ -130,17 +130,17 @@ module Importers
       def save_error
         if @ctx[:lat] && @ctx[:lon]
           @ctx[:geometry] = "POINT(#{@ctx[:lon]} #{@ctx[:lat]})"
-        elsif @ctx[:Lat1] && @ctx[:Lon1] && @ctx[:Lat2] && @ctx[:Lon2]
-          @ctx[:geometry] = "POLYGON((#{@ctx[:Lat1]} #{@ctx[:Lon1]},#{@ctx[:Lat2]} #{@ctx[:Lon1]},#{@ctx[:Lat2]} #{@ctx[:Lon2]},#{@ctx[:Lat1]} #{@ctx[:Lon2]},#{@ctx[:Lat1]} #{@ctx[:Lon1]}))"
+        elsif @ctx[:lat1] && @ctx[:lon1] && @ctx[:lat2] && @ctx[:lon2]
+          @ctx[:geometry] = "POLYGON((#{@ctx[:lat1]} #{@ctx[:lon1]},#{@ctx[:lat2]} #{@ctx[:lon1]},#{@ctx[:lat2]} #{@ctx[:lon2]},#{@ctx[:lat1]} #{@ctx[:lon2]},#{@ctx[:lat1]} #{@ctx[:lon1]}))"
         else
-          raise StandardError.new("Error without geometry!")
+          raise StandardError.new("Error without geometry: #{@ctx.inspect}")
         end
 
         @ctx[:source] = 'zkir'
         @ctx[:source_id] = Digest::SHA2.hexdigest "#{@ctx[:type]}|#{@ctx[:geometry]}"
         @ctx[:type] = @ctx[:type].to_s
 
-        [:num_roads, :house_number, :street, :city, :lat, :lon, :Lat1, :Lon1, :Lat2, :Lon2].each do |key|
+        [:num_roads, :house_number, :street, :city, :lat, :lon, :lat1, :lon1, :lat2, :lon2].each do |key|
           @ctx.delete key
         end
 
