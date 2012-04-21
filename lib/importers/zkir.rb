@@ -70,7 +70,11 @@ module Importers
         @ctx.delete :lon
 
         if @db
-          @db[:osm_errors].insert @ctx
+          if @db[:osm_errors].where(:source => @ctx[:source], :source_id => @ctx[:source_id]).empty?
+            @db[:osm_errors].insert @ctx
+          else
+            @db[:osm_errors].where(:source => @ctx[:source], :source_id => @ctx[:source_id]).update @ctx
+          end
         else
           puts @ctx.inspect
         end

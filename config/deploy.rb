@@ -12,6 +12,7 @@ role :app, "alno.name"
 role :db,  "alno.name", :primary => true
 
 require 'bundler/capistrano'
+require 'whenever/capistrano'
 
 after "deploy:update_code", roles => :app do
   run "ln -nfs #{shared_path}/config/unicorn.rb #{release_path}/config/unicorn.rb"
