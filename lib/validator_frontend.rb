@@ -21,7 +21,7 @@ class ValidatorFrontend
     # Apply BBOX if present
     if has_bbox? req
       if bbox = build_bbox(req)
-        ds = ds.where('ST_Intersects(geometry, ?::geography)', bbox)
+        ds = ds.where('geometry && ?::geography', bbox)
       else
         return "{\"error\": \"Invalid bbox\"}"
       end
