@@ -18,7 +18,11 @@ namespace :import do
     require 'lib/database'
     require 'lib/importers/zkir'
 
-    Importers::Zkir.import! File.open('/home/alno/Projects/Map/RU-MOS.mp_addr.xml')
+    if ENV['FILE']
+      Importers::Zkir.import! File.open(ENV['FILE'])
+    else
+      puts "You should specify an input file!"
+    end
   end
 
 end

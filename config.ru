@@ -1,10 +1,16 @@
-require 'lib/validator_proxy.rb'
+require 'lib/database'
+require 'lib/validator_proxy'
+require 'lib/validator_frontend'
 
 require 'rack/builder'
 
 app = Rack::Builder.new do
   map '/proxy' do
     run ValidatorProxy.new
+  end
+
+  map '/validators/zkir' do
+    run ValidatorFrontend.new(:source => 'zkir')
   end
 
   run lambda { |env| [200, {'Content-Type' => 'text/plain'}, 'OK'] }
