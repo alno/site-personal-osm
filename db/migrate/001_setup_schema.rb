@@ -13,6 +13,8 @@ Sequel.migration do
       column :text, 'text'
       column :geometry, 'GEOGRAPHY(Geometry,4326)'
       column :objects, 'VARCHAR(50)[]'
+
+      spatial_index :geometry
     end
   end
 
