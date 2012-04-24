@@ -10,7 +10,7 @@ app = Rack::Builder.new do
   end
 
   map '/validators/zkir' do
-    run ValidatorFrontend.new(:source => 'zkir')
+    run ValidatorFrontend.new( DB[:map_errors].filter(:source => 'zkir') )
   end
 
   run lambda { |env| [200, {'Content-Type' => 'text/plain'}, 'OK'] }

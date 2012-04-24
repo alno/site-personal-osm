@@ -1,10 +1,10 @@
 require 'rack/request'
+require 'oj'
 
 class ValidatorFrontend
 
-  def initialize(filter = {})
-    @filter = filter
-    @ds = DB[:osm_errors].filter(@filter).select(:id, :type, :text).select_append{ st_asgeojson(geometry).as(:geometry) }.order(:source, :source_id)
+  def initialize(ds)
+    @ds = ds.select(:id, :type, :text, :params).select_append{ st_asgeojson(geometry).as(:geometry) }.order(:source, :source_id)
   end
 
   def call(env)
@@ -39,7 +39,10 @@ class ValidatorFrontend
     res = "{\"count\":#{count},\"results\":["
 
     ds.each do |r|
-      res << "{\"type\":\"#{r[:type]}\",\"text\":\"#{r[:text].gsub('\\','\\\\').gsub('"','\\"')}\",\"geometry\":#{r[:geometry]}},"
+      res << "{\"type\":\"#{r[:type]}\","
+      res << "\"text\":\"#{r[:text].gsub('\\','\\\\').gsub('"','\\"')}\"," if r[:text]
+      res << "\"params\":#{Oj.dump r[:params].to_hash}," if r[:params] && !r[:params].empty?
+      res << "\"geometry\":#{r[:geometry]}},"
     end
 
     res.chomp! ','

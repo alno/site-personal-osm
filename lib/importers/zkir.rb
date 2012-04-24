@@ -35,67 +35,43 @@ module Importers
 
         if @stack == [:QualityReport, :AddressTest, :CitiesWithoutPopulation, :City]
           @ctx[:type] = :city_without_population
-          @ctx[:text] =  "Город без населения: #{@ctx[:city]}"
           save_error
           @ctx = nil
         elsif @stack == [:QualityReport, :AddressTest, :CitiesWithoutPlacePolygon, :City]
           @ctx[:type] = :city_without_place_polygon
-          @ctx[:text] =  "Город без полигональных границ: #{@ctx[:city]}"
           save_error
           @ctx = nil
         elsif @stack == [:QualityReport, :AddressTest, :CitiesWithoutPlaceNode, :City]
           @ctx[:type] = :city_without_place_node
-          @ctx[:text] =  "Город без точечного центра: #{@ctx[:city]}"
-          save_error
-          @ctx = nil
-        elsif @stack == [:QualityReport, :AddressTest, :AddressErrorList, :House]
-          desc = {
-            :building_not_in_place => 'Здание вне населенного пункта',
-            :address_without_street => 'Улица не задана',
-            :address_street_not_found => 'Улица не найдена',
-            :address_street_not_in_place => 'Улица не связана с городом',
-            :address_by_territory => 'Здание номеруется по территории',
-            :address_street_not_routed => 'Улица не является рутинговой в СГ'
-          }
-
-          @ctx[:text] =  "#{desc[@ctx[:type]]}: #{@ctx[:city] || '?'}, #{@ctx[:street] || '?'}, #{@ctx[:house_number]}"
-          save_error
-          @ctx = nil
-        elsif @stack == [:QualityReport, :AddressTest, :StreetErrors, :Street]
-          desc = {
-            :street_not_in_place => 'Улица за пределами города'
-          }
-
-          @ctx[:text] =  "#{desc[@ctx[:type]]}: #{@ctx[:city] || '?'}, #{@ctx[:street] || '?'}"
           save_error
           @ctx = nil
         elsif @stack == [:QualityReport, :RoutingTest, :SubgraphList, :Subgraph]
           @ctx[:type] = :routing_subgraph
-          @ctx[:text] =  "Изолированный рутинговый подграф (#{@ctx[:num_roads]} дорог): #{@ctx[:city] || '?'}, #{@ctx[:street] || '?'}"
           save_error
           @ctx = nil
         elsif @stack == [:QualityReport, :RoutingTestByLevel, :Trunk, :SubgraphList, :Subgraph]
           @ctx[:type] = :routing_subgraph_trunk
-          @ctx[:text] =  "Изолированный рутинговый подграф на уровне Trunk (#{@ctx[:num_roads]} дорог): #{@ctx[:city] || '?'}, #{@ctx[:street] || '?'}"
           save_error
         elsif @stack == [:QualityReport, :RoutingTestByLevel, :Primary, :SubgraphList, :Subgraph]
           @ctx[:type] = :routing_subgraph_primary
-          @ctx[:text] =  "Изолированный рутинговый подграф на уровне Primary (#{@ctx[:num_roads]} дорог): #{@ctx[:city] || '?'}, #{@ctx[:street] || '?'}"
           save_error
           @ctx = nil
         elsif @stack == [:QualityReport, :RoutingTestByLevel, :Secondary, :SubgraphList, :Subgraph]
           @ctx[:type] = :routing_subgraph_secondary
-          @ctx[:text] =  "Изолированный рутинговый подграф на уровне Secondary (#{@ctx[:num_roads]} дорог): #{@ctx[:city] || '?'}, #{@ctx[:street] || '?'}"
           save_error
           @ctx = nil
         elsif @stack == [:QualityReport, :RoutingTestByLevel, :Tertiary, :SubgraphList, :Subgraph]
           @ctx[:type] = :routing_subgraph_tertiary
-          @ctx[:text] =  "Изолированный рутинговый подграф на уровне Tertiary (#{@ctx[:num_roads]} дорог): #{@ctx[:city] || '?'}, #{@ctx[:street] || '?'}"
           save_error
           @ctx = nil
         elsif @stack == [:QualityReport, :RoadDuplicatesTest, :DuplicateList, :DuplicatePoint]
           @ctx[:type] = :duplicate_point
-          @ctx[:text] =  "Точка-дубликат"
+          save_error
+          @ctx = nil
+        elsif @stack == [:QualityReport, :AddressTest, :AddressErrorList, :House]
+          save_error
+          @ctx = nil
+        elsif @stack == [:QualityReport, :AddressTest, :StreetErrors, :Street]
           save_error
           @ctx = nil
         end
@@ -139,16 +115,23 @@ module Importers
         @ctx[:source] = 'zkir'
         @ctx[:source_id] = Digest::SHA2.hexdigest "#{@ctx[:type]}|#{@ctx[:geometry]}"
         @ctx[:type] = @ctx[:type].to_s
+        @ctx[:params] = {}
 
-        [:num_roads, :house_number, :street, :city, :lat, :lon, :lat1, :lon1, :lat2, :lon2].each do |key|
+        [:num_roads, :house_number, :street, :city].each do |key|
+          @ctx[:params][key] = @ctx.delete(key) if @ctx[key] && @ctx[key] != ''
+        end
+
+        @ctx[:params] = @ctx[:params].hstore
+
+        [:lat, :lon, :lat1, :lon1, :lat2, :lon2].each do |key|
           @ctx.delete key
         end
 
         if @db
-          if @db[:osm_errors].where(:source => @ctx[:source], :source_id => @ctx[:source_id]).empty?
-            @db[:osm_errors].insert @ctx
+          if @db[:map_errors].where(:source => @ctx[:source], :source_id => @ctx[:source_id]).empty?
+            @db[:map_errors].insert @ctx
           else
-            @db[:osm_errors].where(:source => @ctx[:source], :source_id => @ctx[:source_id]).update @ctx
+            @db[:map_errors].where(:source => @ctx[:source], :source_id => @ctx[:source_id]).update @ctx
           end
         else
           puts @ctx.inspect

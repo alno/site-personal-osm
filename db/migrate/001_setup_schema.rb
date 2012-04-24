@@ -1,7 +1,7 @@
 Sequel.migration do
 
   change do
-    create_table :osm_errors do
+    create_table :map_errors do
       column :id, 'bigserial', :primary_key => true
 
       column :source, 'varchar(50)', :null => false
@@ -13,6 +13,7 @@ Sequel.migration do
       column :text, 'text'
       column :geometry, 'GEOGRAPHY(Geometry,4326)'
       column :objects, 'VARCHAR(50)[]'
+      column :params, 'HSTORE'
 
       spatial_index :geometry
     end
