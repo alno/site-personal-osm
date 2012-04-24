@@ -40,6 +40,7 @@ class ValidatorFrontend
 
     ds.each do |r|
       res << "{\"type\":\"#{r[:type]}\","
+      res << "\"url\":\"#{r[:url].gsub('\\','\\\\').gsub('"','\\"')}\"," if r[:url]
       res << "\"text\":\"#{r[:text].gsub('\\','\\\\').gsub('"','\\"')}\"," if r[:text]
       res << "\"params\":#{Oj.dump r[:params].to_hash}," if r[:params] && !r[:params].empty?
       res << "\"geometry\":#{r[:geometry]}},"

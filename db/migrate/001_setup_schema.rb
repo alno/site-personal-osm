@@ -11,6 +11,7 @@ Sequel.migration do
 
       column :type, 'varchar(50)', :null => false
       column :text, 'text'
+      column :url, 'varchar(255)'
       column :geometry, 'GEOGRAPHY(Geometry,4326)'
       column :objects, 'VARCHAR(50)[]'
       column :params, 'HSTORE'
