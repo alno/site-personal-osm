@@ -12,6 +12,8 @@ gem 'pg'
 gem 'oj'
 gem 'ox'
 
+gem 'vendorer'
+
 group :deploy do
   gem 'whenever'
   gem 'capistrano'

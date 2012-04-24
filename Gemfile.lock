@@ -36,6 +36,7 @@ GEM
       kgio (~> 2.6)
       rack
       raindrops (~> 0.7)
+    vendorer (0.1.11)
     whenever (0.7.3)
       activesupport (>= 2.3.4)
       chronic (~> 0.6.3)
@@ -54,4 +55,5 @@ DEPENDENCIES
   rgeo
   sequel
   unicorn
+  vendorer
   whenever

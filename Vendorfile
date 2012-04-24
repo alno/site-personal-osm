@@ -1,0 +1,3 @@
+file 'public/assets/osmjs-validators-layer.js', 'https://raw.github.com/alno/osm-js-libs/master/dist/validators/leaflet-layer.js'
+file 'public/assets/osmjs-validators-errors.js', 'https://raw.github.com/alno/osm-js-libs/master/dist/validators/jquery-errors-control.js'
+file 'public/assets/osmjs-validators-sources.js', 'https://raw.github.com/alno/osm-js-libs/master/dist/validators/jquery-sources-control.js'
