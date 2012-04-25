@@ -7,3 +7,4 @@ DB_CONN_STRING = "postgres://#{DB_CONFIG['username']}:#{DB_CONFIG['password']}@#
 DB = Sequel.connect DB_CONN_STRING
 
 Sequel.extension :pg_hstore
+Sequel.extension :pg_array

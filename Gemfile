@@ -9,6 +9,7 @@ gem 'sequel'
 gem 'unicorn'
 gem 'pg'
 
+gem 'json'
 gem 'oj'
 gem 'ox'
 

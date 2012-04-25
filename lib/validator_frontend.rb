@@ -4,7 +4,7 @@ require 'oj'
 class ValidatorFrontend
 
   def initialize(ds)
-    @ds = ds.select(:id, :type, :text, :params).select_append{ st_asgeojson(geometry).as(:geometry) }.order(:source, :source_id)
+    @ds = ds.select(:id, :type, :text, :params, :objects).select_append{ st_asgeojson(geometry, 6).as(:geometry) }.order(:source, :source_id)
   end
 
   def call(env)
@@ -43,6 +43,7 @@ class ValidatorFrontend
       res << "\"url\":\"#{r[:url].gsub('\\','\\\\').gsub('"','\\"')}\"," if r[:url]
       res << "\"text\":\"#{r[:text].gsub('\\','\\\\').gsub('"','\\"')}\"," if r[:text]
       res << "\"params\":#{Oj.dump r[:params].to_hash}," if r[:params] && !r[:params].empty?
+      res << "\"objects\":#{Oj.dump r[:objects].map{|o|o.split('/')}}," if r[:objects] && !r[:objects].empty?
       res << "\"geometry\":#{r[:geometry]}},"
     end
 
