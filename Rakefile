@@ -34,3 +34,14 @@ namespace :import do
   end
 
 end
+
+namespace :validate do
+
+  task :poi do
+    require 'lib/database'
+    require 'lib/validators/poi'
+
+    Validators::Poi.validate!
+  end
+
+end
