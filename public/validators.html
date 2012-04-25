@@ -9,9 +9,22 @@
     <script src="http://leaflet.cloudmade.com/dist/leaflet.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 
-    <script src="/assets/osmjs-validators-layer.js"></script>
-    <script src="/assets/osmjs-validators-errors.js"></script>
-    <script src="/assets/osmjs-validators-sources.js"></script>
+    <script src="./assets/osmjs-validators-layer.js"></script>
+    <script src="./assets/osmjs-validators-errors.js"></script>
+    <script src="./assets/osmjs-validators-sources.js"></script>
+
+    <style type="text/css">
+      .map-validation-error ul {
+        list-style: none;
+        padding-left: 10px;
+        margin: 8px 0px;
+      }
+
+      .map-validation-error h4,
+      .map-validation-error p {
+        margin: 8px 0px;
+      }
+    </style>
   </head>
   <body>
     <div id="map" style="width: 100%; height: 500"></div>
@@ -52,7 +65,17 @@
           "address_street_not_routed": {"text": "Не-рутинговая улица"},
           "street_not_in_place": {"text": "Улица за пределами города"}
         },
-        "jsonp": true
+        "jsonp": true,
+        "cors": true
+      },{
+        "name": "Валидатор POI",
+        "url": "http://osm.alno.name/validators/poi?minlat={minlat}&minlon={minlon}&maxlat={maxlat}&maxlon={maxlon}",
+        "types": {
+          "shop_without_opening_hours": {"text": "Магазин без расписания работы: {name}"},
+          "shop_without_name": {"text": "Магазин без названия"}
+        },
+        "jsonp": true,
+        "cors": true
       }]});
 
       $('#sources').validatorSourcesControl(validatorsLayer, {sources: [{
@@ -135,12 +158,21 @@
             name: "Улица не является рутинговой",
             type: "address_street_not_routed"
           }]
+        }]
+      },{
+        name: "Точки интереса",
+        children: [{
+          name: "Магазин без названия",
+          type: "shop_without_name"
         },{
-          name: "Другие",
-          children: [{
-            name: "Точка-дубликат",
-            type: "duplicate_point"
-          }]
+          name: "Магазин без часов работы",
+          type: "shop_without_opening_hours"
+        }]
+      },{
+        name: "Другие",
+        children: [{
+          name: "Точка-дубликат",
+          type: "duplicate_point"
         }]
       }]})
 
