@@ -54,9 +54,9 @@ class ValidatorFrontend
 
   def build_response(req, data)
     if req[:callback] # Is it JSONP?
-      [200, {'Content-Type' => 'application/javascript'}, "#{req[:callback]}(#{data})"]
+      [200, {'Content-Type' => 'application/javascript', 'Access-Control-Allow-Origin' => '*'}, "#{req[:callback]}(#{data})"]
     else
-      [200, {'Content-Type' => 'application/json'}, data]
+      [200, {'Content-Type' => 'application/json', 'Access-Control-Allow-Origin' => '*'}, data]
     end
   end
 
