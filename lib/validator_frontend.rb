@@ -27,6 +27,10 @@ class ValidatorFrontend
       end
     end
 
+    if req[:types] && !req[:types].empty?
+      ds = ds.where('type IN ?', req[:types].split(','))
+    end
+
     # Calculate offset/limit values
     lim = (req[:limit] || 100).to_i
     off = (req[:offset] || 0).to_i
