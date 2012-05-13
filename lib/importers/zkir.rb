@@ -17,6 +17,7 @@ module Importers
         [:QualityReport, :RoutingTestByLevel, :Secondary, :SubgraphList, :Subgraph],
         [:QualityReport, :RoutingTestByLevel, :Tertiary, :SubgraphList, :Subgraph],
         [:QualityReport, :RoadDuplicatesTest, :DuplicateList, :DuplicatePoint],
+        [:QualityReport, :CoastLineTest, :BreakList, :BreakPoint],
       ]
 
       def initialize(db)
@@ -72,6 +73,10 @@ module Importers
           save_error
           @ctx = nil
         elsif @stack == [:QualityReport, :AddressTest, :StreetErrors, :Street]
+          save_error
+          @ctx = nil
+        elsif @stack == [:QualityReport, :CoastLineTest, :BreakList, :BreakPoint]
+          @ctx[:type] = :coastline_break
           save_error
           @ctx = nil
         end
