@@ -27,12 +27,12 @@ module Validators
     end
 
     def error_data(err_type, obj_type, r)
-      { :type => err_type, :source => 'pois', :source_id => r[:id].to_s, :geometry => r[:geom], :objects => ["#{obj_type}/#{r[:id]}"].pg_array, :params => {:name => r[:tags]['name']}.hstore }
+      { :type => err_type, :source => 'pois', :source_id => r[:id].to_s, :geometry => r[:geom], :objects => ["#{obj_type}/#{r[:id]}"].pg_array, :params => {:name => r[:tags]['name']}.hstore, :updated_at => Time.now, :deleted_at => nil }
     end
 
     def save(data)
       if DB[:map_errors].where(:source => data[:source], :source_id => data[:source_id]).empty?
-        DB[:map_errors].insert data
+        DB[:map_errors].insert data.merge(:created_at => Time.now)
       else
         DB[:map_errors].where(:source => data[:source], :source_id => data[:source_id]).update data
       end

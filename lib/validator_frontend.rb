@@ -4,7 +4,7 @@ require 'oj'
 class ValidatorFrontend
 
   def initialize(ds)
-    @ds = ds.select(:id, :type, :text, :params, :objects).select_append{ st_asgeojson(geometry, 6).as(:geometry) }.order(:source, :source_id)
+    @ds = ds.select(:id, :type, :text, :params, :objects).select_append{ st_asgeojson(geometry, 6).as(:geometry) }.where('deleted_at IS NULL').order(:source, :source_id)
   end
 
   def call(env)

@@ -16,7 +16,11 @@ Sequel.migration do
       column :objects, 'VARCHAR(50)[]'
       column :params, 'HSTORE'
 
-      spatial_index :geometry
+      column :created_at, 'TIMESTAMP', :null => false
+      column :updated_at, 'TIMESTAMP', :null => false
+      column :deleted_at, 'TIMESTAMP'
+
+      spatial_index :geometry, :where => 'deleted_at IS NULL'
     end
   end
 

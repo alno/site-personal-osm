@@ -127,8 +127,12 @@ module Importers
           @ctx.delete key
         end
 
+        @ctx[:updated_at] = Time.now
+        @ctx[:deleted_at] = nil
+
         if @db
           if @db[:map_errors].where(:source => @ctx[:source], :source_id => @ctx[:source_id]).empty?
+            @ctx[:created_at] = Time.now
             @db[:map_errors].insert @ctx
           else
             @db[:map_errors].where(:source => @ctx[:source], :source_id => @ctx[:source_id]).update @ctx
