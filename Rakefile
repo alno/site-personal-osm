@@ -20,7 +20,10 @@ namespace :validators do
       require 'lib/database'
       require 'lib/validators/poi'
 
+      start = Time.now
       Validators::Poi.validate!
+
+      DB[:map_errors].where('source = ? AND updated_at < ?', 'poi', start).update :deleted_at => Time.now
     end
 
   end
@@ -53,7 +56,7 @@ namespace :validators do
         Importers::Zkir.import_from_url! "http://peirce.gis-lab.info/ADDR_CHK/#{reg}.mp_addr.xml"
       end
 
-      DB[:map_errors].where('updated_at < ?', start).update :deleted_at => Time.now
+      DB[:map_errors].where('source = ? AND updated_at < ?', 'zkir', start).update :deleted_at => Time.now
     end
 
   end
