@@ -5,20 +5,22 @@ module Importers
 
     class Handler < ::Ox::Sax
 
-      ERROR_STACKS = [
-        [:QualityReport, :AddressTest, :CitiesWithoutPopulation, :City],
-        [:QualityReport, :AddressTest, :CitiesWithoutPlacePolygon, :City],
-        [:QualityReport, :AddressTest, :CitiesWithoutPlaceNode, :City],
-        [:QualityReport, :AddressTest, :AddressErrorList, :House],
-        [:QualityReport, :AddressTest, :StreetErrors, :Street],
-        [:QualityReport, :RoutingTest, :SubgraphList, :Subgraph],
-        [:QualityReport, :RoutingTestByLevel, :Trunk, :SubgraphList, :Subgraph],
-        [:QualityReport, :RoutingTestByLevel, :Primary, :SubgraphList, :Subgraph],
-        [:QualityReport, :RoutingTestByLevel, :Secondary, :SubgraphList, :Subgraph],
-        [:QualityReport, :RoutingTestByLevel, :Tertiary, :SubgraphList, :Subgraph],
-        [:QualityReport, :RoadDuplicatesTest, :DuplicateList, :DuplicatePoint],
-        [:QualityReport, :CoastLineTest, :BreakList, :BreakPoint],
-      ]
+      ERROR_STACKS = {
+        [:QualityReport, :AddressTest, :CitiesWithoutPopulation, :City] => :city_without_population,
+        [:QualityReport, :AddressTest, :CitiesWithoutPlacePolygon, :City] => :city_without_place_polygon,
+        [:QualityReport, :AddressTest, :CitiesWithoutPlaceNode, :City] => :city_without_place_node,
+        [:QualityReport, :AddressTest, :AddressErrorList, :House] => nil,
+        [:QualityReport, :AddressTest, :StreetErrors, :Street] => nil,
+        [:QualityReport, :AddressTest, :StreetsOutsideCities, :Street] => :street_not_in_place,
+        [:QualityReport, :RoutingTest, :SubgraphList, :Subgraph] => :routing_subgraph,
+        [:QualityReport, :RoutingTestByLevel, :Trunk, :SubgraphList, :Subgraph] => :routing_subgraph_trunk,
+        [:QualityReport, :RoutingTestByLevel, :Primary, :SubgraphList, :Subgraph] => :routing_subgraph_primary,
+        [:QualityReport, :RoutingTestByLevel, :Secondary, :SubgraphList, :Subgraph] => :routing_subgraph_secondary,
+        [:QualityReport, :RoutingTestByLevel, :Tertiary, :SubgraphList, :Subgraph] => :routing_subgraph_tertiary,
+        [:QualityReport, :RoadDuplicatesTest, :DuplicateList, :DuplicatePoint] => :duplicate_point,
+        [:QualityReport, :CoastLineTest, :BreakList, :BreakPoint] => :coastline_break,
+        [:QualityReport, :DeadEndsTest, :DeadEndList, :DeadEnd] => :dead_end
+      }
 
       def initialize(db)
         @db = db
@@ -34,49 +36,8 @@ module Importers
       def end_element(name)
         raise StandardError.new("Wrong stack state: #{@stack.inspect}, but #{name} ending") if @stack.last != name
 
-        if @stack == [:QualityReport, :AddressTest, :CitiesWithoutPopulation, :City]
-          @ctx[:type] = :city_without_population
-          save_error
-          @ctx = nil
-        elsif @stack == [:QualityReport, :AddressTest, :CitiesWithoutPlacePolygon, :City]
-          @ctx[:type] = :city_without_place_polygon
-          save_error
-          @ctx = nil
-        elsif @stack == [:QualityReport, :AddressTest, :CitiesWithoutPlaceNode, :City]
-          @ctx[:type] = :city_without_place_node
-          save_error
-          @ctx = nil
-        elsif @stack == [:QualityReport, :RoutingTest, :SubgraphList, :Subgraph]
-          @ctx[:type] = :routing_subgraph
-          save_error
-          @ctx = nil
-        elsif @stack == [:QualityReport, :RoutingTestByLevel, :Trunk, :SubgraphList, :Subgraph]
-          @ctx[:type] = :routing_subgraph_trunk
-          save_error
-        elsif @stack == [:QualityReport, :RoutingTestByLevel, :Primary, :SubgraphList, :Subgraph]
-          @ctx[:type] = :routing_subgraph_primary
-          save_error
-          @ctx = nil
-        elsif @stack == [:QualityReport, :RoutingTestByLevel, :Secondary, :SubgraphList, :Subgraph]
-          @ctx[:type] = :routing_subgraph_secondary
-          save_error
-          @ctx = nil
-        elsif @stack == [:QualityReport, :RoutingTestByLevel, :Tertiary, :SubgraphList, :Subgraph]
-          @ctx[:type] = :routing_subgraph_tertiary
-          save_error
-          @ctx = nil
-        elsif @stack == [:QualityReport, :RoadDuplicatesTest, :DuplicateList, :DuplicatePoint]
-          @ctx[:type] = :duplicate_point
-          save_error
-          @ctx = nil
-        elsif @stack == [:QualityReport, :AddressTest, :AddressErrorList, :House]
-          save_error
-          @ctx = nil
-        elsif @stack == [:QualityReport, :AddressTest, :StreetErrors, :Street]
-          save_error
-          @ctx = nil
-        elsif @stack == [:QualityReport, :CoastLineTest, :BreakList, :BreakPoint]
-          @ctx[:type] = :coastline_break
+        if ERROR_STACKS.include? @stack
+          @ctx[:type] = ERROR_STACKS[@stack]
           save_error
           @ctx = nil
         end
