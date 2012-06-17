@@ -7,7 +7,10 @@
   },
   "layers": {
     "simple": {
-      "provider": {"name": "mapnik", "mapfile": "mapstyle-simple.xml"},
+      "provider": {
+        "name": "mapnik",
+        "mapfile": "mapstyle-simple.xml"
+      },
       "projection": "spherical mercator",
       "preview": {
         "lat": 54.5302,
@@ -22,6 +25,25 @@
       "png options": {
         "optimize": true
       }
+    },
+    "grid": {
+      "provider": {
+        "name": "mapnik grid",
+        "mapfile": "mapstyle-simple.xml",
+        "scale": 4,
+        "layers": [
+          [0, ["name"]],
+          [7, ["name"]],
+          [9, ["housenumber", "street"]]
+        ]
+      },
+      "projection": "spherical mercator",
+      "preview": {
+        "lat": 54.5302,
+        "lon": 36.2597,
+        "zoom": 12
+      }
     }
-  }
+  },
+  "index": "index.html"
 }
