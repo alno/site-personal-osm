@@ -22,7 +22,7 @@ namespace :render do
       FileUtils.rm_rf importdir
       FileUtils.mkdir_p importdir
 
-      dump_url = "http://data.gis-lab.info/osm_dump/dump/latest/RU-KLU.osm.pbf"
+      dump_url = "http://data.gis-lab.info/osm_dump/dump/latest/RU.osm.pbf"
       dump_file = "#{importdir}/#{dump_url.split('/').last}"
 
       puts "Downloading OSM dump..."
