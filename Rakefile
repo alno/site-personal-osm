@@ -35,7 +35,7 @@ namespace :render do
     style = File.expand_path('config/render/osm2pgsql.style', File.dirname(__FILE__))
 
     ENV['PGPASS'] = DB_CONFIG['password']
-    system "cd '#{importdir}' && '#{binary}' -j -m -S #{style} -U #{DB_CONFIG['username']} -d #{DB_CONFIG['database']} -H #{DB_CONFIG['host']} -p render_raw '#{dump_file}'" or raise StandardError.new("Error importing data")
+    system "cd '#{importdir}' && '#{binary}' -j -m --slim -S #{style} -U #{DB_CONFIG['username']} -d #{DB_CONFIG['database']} -H #{DB_CONFIG['host']} -p render_raw '#{dump_file}'" or raise StandardError.new("Error importing data")
   end
 
   task :update_views do
