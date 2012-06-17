@@ -28,6 +28,14 @@ lines :barriers, :boundaries => true do
   map :barrier, :natural => :cliff, :man_made => :enbankment
 end
 
+lines :powerlines, :boundaries => true do
+  map :power => :line
+end
+
+points :powerpoints, :boundaries => true do
+  map :power => [:tower, :pole]
+end
+
 polygons :territories do
   map :landuse, :natural => [:wood, :scrub, :wetland, :beach]
 end
