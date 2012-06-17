@@ -1,0 +1,27 @@
+{
+  "cache": {
+    "name": "Disk",
+    "path": "/tmp/stache",
+    "umask": "0000",
+    "dirs": "portable"
+  },
+  "layers": {
+    "simple": {
+      "provider": {"name": "mapnik", "mapfile": "mapstyle-simple.xml"},
+      "projection": "spherical mercator",
+      "preview": {
+        "lat": 54.5302,
+        "lon": 36.2597,
+        "zoom": 12
+      },
+      "metatile": {
+        "rows": 4,
+        "columns": 4,
+        "buffer": 0
+      },
+      "png options": {
+        "optimize": true
+      }
+    }
+  }
+}
