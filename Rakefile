@@ -35,14 +35,14 @@ namespace :render do
     style = File.expand_path('config/render/osm2pgsql.style', File.dirname(__FILE__))
 
     ENV['PGPASS'] = DB_CONFIG['password']
-    system "cd '#{importdir}' && '#{binary}' -j -m --slim -S #{style} -U #{DB_CONFIG['username']} -d #{DB_CONFIG['database']} -H #{DB_CONFIG['host']} -p render_raw '#{dump_file}'" or raise StandardError.new("Error importing data")
+    system "cd '#{importdir}' && '#{binary}' -j -m --slim -S #{style} -U #{DB_CONFIG['username']} -d #{DB_CONFIG['database']} -H #{DB_CONFIG['host']} -p raw '#{dump_file}'" or raise StandardError.new("Error importing data")
   end
 
   task :update_views do
     require 'lib/database'
     require 'osm_import'
 
-    OsmImport.import File.expand_path('config/render/mapping.rb', File.dirname(__FILE__)), :pg => { :dbname => DB_CONFIG['database'], :user => DB_CONFIG['username'], :password => DB_CONFIG['password'], :host => DB_CONFIG['host'] }, :projection => '900913', :prefix => 'render_', :raw_prefix => 'render_raw_', :target => 'pg_views'
+    OsmImport.import File.expand_path('config/render/mapping.rb', File.dirname(__FILE__)), :pg => { :dbname => DB_CONFIG['database'], :user => DB_CONFIG['username'], :password => DB_CONFIG['password'], :host => DB_CONFIG['host'] }, :projection => '900913', :prefix => 'render_', :raw_prefix => 'raw_', :target => 'pg_views'
   end
 
 end
