@@ -13,6 +13,8 @@ gem 'json'
 gem 'oj'
 gem 'ox'
 
+gem 'osm-import', :git => 'git://github.com/alno/osm-import.git'
+
 group :deploy do
   gem 'whenever'
 end

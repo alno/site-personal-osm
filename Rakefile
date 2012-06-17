@@ -11,6 +11,42 @@ namespace :db do
 
 end
 
+namespace :render do
+
+  task :download do
+    if ENV['FILE'] # Dump is present, just import it
+      dump_file = File.expand_path(ENV['FILE'])
+    else # Dump should be downloaded
+      importdir = File.expand_path('tmp/import', File.dirname(__FILE__))
+
+      FileUtils.rm_rf importdir
+      FileUtils.mkdir_p importdir
+
+      dump_url = "http://data.gis-lab.info/osm_dump/dump/latest/RU-KLU.osm.pbf"
+      dump_file = "#{importdir}/#{dump_url.split('/').last}"
+
+      puts "Downloading OSM dump..."
+      system "cd '#{importdir}' && wget '#{dump_url}'" or raise StandardError.new("Error downloading dump from '#{dump_url}'")
+    end
+
+    require 'lib/database'
+
+    binary = File.expand_path('vendor/bin/osm2pgsql', File.dirname(__FILE__))
+    style = File.expand_path('config/render/osm2pgsql.style', File.dirname(__FILE__))
+
+    ENV['PGPASS'] = DB_CONFIG['password']
+    system "cd '#{importdir}' && '#{binary}' -j -m -S #{style} -U #{DB_CONFIG['username']} -d #{DB_CONFIG['database']} -H #{DB_CONFIG['host']} -p render_raw '#{dump_file}'" or raise StandardError.new("Error importing data")
+  end
+
+  task :update_views do
+    require 'lib/database'
+    require 'osm_import'
+
+    OsmImport.import File.expand_path('config/render/mapping.rb', File.dirname(__FILE__)), :pg => { :dbname => DB_CONFIG['database'], :user => DB_CONFIG['username'], :password => DB_CONFIG['password'], :host => DB_CONFIG['host'] }, :projection => '900913', :prefix => 'render_', :raw_prefix => 'render_raw_', :target => 'pg_views'
+  end
+
+end
+
 namespace :validators do
 
   namespace :poi do
