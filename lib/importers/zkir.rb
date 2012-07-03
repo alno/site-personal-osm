@@ -37,7 +37,7 @@ module Importers
         raise StandardError.new("Wrong stack state: #{@stack.inspect}, but #{name} ending") if @stack.last != name
 
         if ERROR_STACKS.include? @stack
-          @ctx[:type] = ERROR_STACKS[@stack]
+          @ctx[:type] ||= ERROR_STACKS[@stack]
           save_error
           @ctx = nil
         end
