@@ -24,15 +24,15 @@ polygons :waterareas do
   map :waterway => [:riverbank, :drain, :pond], :natural => [:water, :lake, :bay], :landuse => [:basin, :reservoir]
 end
 
-lines :barriers, :boundaries => true do
+lines :barriers do # TODO Add boundaries
   map :barrier, :natural => :cliff, :man_made => :enbankment
 end
 
-lines :powerlines, :boundaries => true do
+lines :powerlines do
   map :power => :line
 end
 
-points :powerpoints, :boundaries => true do
+points :powerpoints do
   map :power => [:tower, :pole]
 end
 
