@@ -28,7 +28,10 @@ class ValidatorFrontend
     end
 
     if req[:types] && !req[:types].empty?
-      ds = ds.where('types && ARRAY[?]', req[:types].split(','))
+      types = req[:types].split(',')
+      placeholders = (['?'] * types.size).join(',')
+
+      ds = ds.where("types && ARRAY[#{placeholders}]", *types)
     end
 
     # Calculate offset/limit values
