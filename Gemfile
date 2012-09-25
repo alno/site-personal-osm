@@ -13,7 +13,7 @@ gem 'json'
 gem 'oj'
 gem 'ox'
 
-gem 'osm-import', :git => 'git://github.com/alno/osm-import.git'
+gem 'osmer', :path => '/home/alno/Projects/Map/osmer'
 
 group :deploy do
   gem 'whenever'
