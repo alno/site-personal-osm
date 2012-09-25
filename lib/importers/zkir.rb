@@ -78,20 +78,22 @@ module Importers
           raise StandardError.new("Error without geometry: #{@ctx.inspect}")
         end
 
-        @ctx[:source] = 'zkir'
-        @ctx[:source_id] = Digest::SHA2.hexdigest "#{@ctx[:type]}|#{@ctx[:geometry]}"
-        @ctx[:type] = @ctx[:type].to_s
+        @ctx[:types] = [ @ctx.delete(:type).to_s ]
         @ctx[:params] = {}
 
         [:num_roads, :house_number, :street, :city].each do |key|
           @ctx[:params][key] = @ctx.delete(key) if @ctx[key] && @ctx[key] != ''
         end
 
-        @ctx[:params] = @ctx[:params].hstore
-
         [:lat, :lon, :lat1, :lon1, :lat2, :lon2].each do |key|
           @ctx.delete key
         end
+
+        @ctx[:source] = 'zkir'
+        @ctx[:source_id] = Digest::SHA2.hexdigest "#{@ctx[:types]}|#{@ctx[:geometry]}"
+
+        @ctx[:params] = @ctx[:params].hstore
+        @ctx[:types] = @ctx[:types].pg_array
 
         @ctx[:updated_at] = Time.now
         @ctx[:deleted_at] = nil

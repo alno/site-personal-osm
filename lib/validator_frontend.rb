@@ -4,7 +4,7 @@ require 'oj'
 class ValidatorFrontend
 
   def initialize(ds)
-    @ds = ds.select(:id, :type, :text, :params, :objects).select_append{ st_asgeojson(geometry, 6).as(:geometry) }.where('deleted_at IS NULL').order(:source, :source_id)
+    @ds = ds.select(:id, :types, :url, :text, :params, :objects).select_append{ st_asgeojson(geometry, 6).as(:geometry) }.where('deleted_at IS NULL').order(:source, :source_id)
   end
 
   def call(env)
@@ -28,7 +28,7 @@ class ValidatorFrontend
     end
 
     if req[:types] && !req[:types].empty?
-      ds = ds.where('type IN ?', req[:types].split(','))
+      ds = ds.where('types && ARRAY[?]', req[:types].split(','))
     end
 
     # Calculate offset/limit values
@@ -43,7 +43,7 @@ class ValidatorFrontend
     res = "{\"count\":#{count},\"results\":["
 
     ds.each do |r|
-      res << "{\"type\":\"#{r[:type]}\","
+      res << "{\"types\":[#{r[:types].map{|t| "\"#{t}\""}.join(',') }],"
       res << "\"url\":\"#{r[:url].gsub('\\','\\\\').gsub('"','\\"')}\"," if r[:url]
       res << "\"text\":\"#{r[:text].gsub('\\','\\\\').gsub('"','\\"')}\"," if r[:text]
       res << "\"params\":#{Oj.dump r[:params].to_hash}," if r[:params] && !r[:params].empty?

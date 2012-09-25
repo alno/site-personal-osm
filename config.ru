@@ -13,6 +13,10 @@ app = Rack::Builder.new do
     run ValidatorFrontend.new( DB[:map_errors].filter(:source => 'zkir') )
   end
 
+  map '/validators/cupivan_places' do
+    run ValidatorFrontend.new( DB[:map_errors].filter(:source => 'cupivan_places') )
+  end
+
   map '/validators/poi' do
     run ValidatorFrontend.new( DB[:map_errors].filter(:source => 'pois') )
   end

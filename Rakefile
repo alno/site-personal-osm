@@ -97,4 +97,15 @@ namespace :validators do
 
   end
 
+  namespace :cupivan_places do
+
+    task :import do
+      require 'lib/database'
+      require 'lib/importers/json'
+
+      Importers::Json.import! :cupivan_places, File.open(ENV['FILE'])
+    end
+
+  end
+
 end
