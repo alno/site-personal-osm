@@ -68,13 +68,14 @@ namespace :validators do
 
     desc "Import data of Zkir validator"
     task :import do
+      require 'open-uri'
       require 'lib/database'
       require 'lib/importers/zkir'
 
       if ENV['FILE']
         Importers::Zkir.import_from! File.open(ENV['FILE'])
       elsif ENV['URL']
-        Importers::Zkir.import_from_url! ENV['URL']
+        Importers::Zkir.import_from! open(ENV['URL'])
       else
         puts "You should specify an input file!"
       end
@@ -82,6 +83,7 @@ namespace :validators do
 
     desc "Update all data of Zkir validator"
     task :update do
+      require 'open-uri'
       require 'lib/database'
       require 'lib/importers/zkir'
 
@@ -90,7 +92,10 @@ namespace :validators do
       regions = ENV['REGIONS'].split(',') if ENV['REGIONS']
 
       regions.each do |reg|
-        Importers::Zkir.import_from_url! "http://peirce.gis-lab.info/ADDR_CHK/#{reg}.mp_addr.xml"
+        uri = "http://peirce.gis-lab.info/ADDR_CHK/#{reg}.mp_addr.xml"
+
+        puts "Importing errors from '#{uri}'..."
+        Importers::Zkir.import_from! open(uri)
       end
 
       DB[:map_errors].where('source = ? AND updated_at < ?', 'zkir', start).update :deleted_at => Time.now
@@ -105,6 +110,19 @@ namespace :validators do
       require 'lib/importers/json'
 
       Importers::Json.import! :cupivan_places, File.open(ENV['FILE'])
+    end
+
+    task :update do
+      require 'open-uri'
+      require 'lib/database'
+      require 'lib/importers/json'
+
+      meta = Oj.load(open "http://osm.cupivan.ru/places/validator/validator.json")
+
+      meta['include'].each do |uri|
+        puts "Importing errors from '#{uri}'..."
+        Importers::Json.import! :cupivan_places, open(uri)
+      end
     end
 
   end

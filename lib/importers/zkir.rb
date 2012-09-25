@@ -129,16 +129,6 @@ module Importers
         end
       end
 
-      def import_from_url! url
-        require 'tempfile'
-
-        file = Tempfile.new 'import'
-
-        `wget '#{url}' -O #{file.path}`
-
-        import_from! file
-      end
-
     end
   end
 end
