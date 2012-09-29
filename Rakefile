@@ -1,5 +1,7 @@
 #!/usr/bin/env rake
 
+$:.unshift('.')
+
 namespace :db do
 
   desc "Migrate database schema"

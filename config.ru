@@ -1,3 +1,5 @@
+$:.unshift('.')
+
 require 'lib/database'
 require 'lib/validator_proxy'
 require 'lib/validator_frontend'
