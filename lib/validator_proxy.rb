@@ -26,7 +26,7 @@ class ValidatorProxy < Rack::Proxy
     response[1]['Access-Control-Allow-Origin'] = '*'
 
     if callback
-      response[2] = "#{callback}(#{response[2]})"
+      response[2] = ["#{callback}(#{response[2].join})"]
       response[1]['Content-Type'] = 'application/javascript'
       response[1]['Content-Length'] = response[2].bytesize.to_s
     end
