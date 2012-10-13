@@ -22,3 +22,7 @@
 every 1.day, :at => '03:00' do
   rake "validators:zkir:update"
 end
+
+every 1.day, :at => '06:00' do
+  rake "validators:cupivan_places:update"
+end
