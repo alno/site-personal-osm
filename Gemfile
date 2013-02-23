@@ -7,7 +7,7 @@ gem 'rack-proxy'
 gem 'rack'
 gem 'rgeo'
 
-gem 'sequel'
+gem 'sequel', '~> 3.37.0'
 gem 'unicorn'
 gem 'pg'
 
