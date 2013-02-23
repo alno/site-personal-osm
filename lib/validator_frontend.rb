@@ -4,7 +4,7 @@ require 'oj'
 class ValidatorFrontend
 
   def initialize(ds)
-    @ds = ds.select(:id, :types, :url, :text, :params, :objects).select_append{ st_asgeojson(geometry, 6).as(:geometry) }.where('deleted_at IS NULL').order(:source, :source_id)
+    @ds = ds.select(:id, :types, :url, :text, :params, :objects, :created_at, :updated_at).select_append{ st_asgeojson(geometry, 6).as(:geometry) }.where('deleted_at IS NULL').order(:source, :source_id)
   end
 
   def call(env)
@@ -48,6 +48,8 @@ class ValidatorFrontend
     ds.each do |r|
       res << "{\"types\":[#{r[:types].map{|t| "\"#{t}\""}.join(',') }],"
       res << "\"url\":\"#{r[:url].gsub('\\','\\\\').gsub('"','\\"')}\"," if r[:url]
+      res << "\"created_at\":\"#{r[:created_at]}\"," if r[:created_at]
+      res << "\"updated_at\":\"#{r[:updated_at]}\"," if r[:updated_at]
       res << "\"text\":\"#{r[:text].gsub('\\','\\\\').gsub('"','\\"')}\"," if r[:text]
       res << "\"params\":#{Oj.dump r[:params].to_hash}," if r[:params] && !r[:params].empty?
       res << "\"objects\":#{Oj.dump r[:objects].map{|o|o.split('/')}}," if r[:objects] && !r[:objects].empty?
