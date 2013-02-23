@@ -53,11 +53,11 @@ module Importers
         elsif @stack == [:QualityReport, :AddressTest, :StreetErrors, :Street, :ErrType]
           @ctx[:type] = [nil, :street_not_in_place][value.to_i]
         elsif @stack.last == :HouseNumber
-          @ctx[:house_number] = Iconv.conv('UTF8','CP1251', value)
+          @ctx[:house_number] = value
         elsif @stack.last == :Street
-          @ctx[:street] = Iconv.conv('UTF8','CP1251', value)
+          @ctx[:street] = value
         elsif @stack.last == :City
-          @ctx[:city] = Iconv.conv('UTF8','CP1251', value)
+          @ctx[:city] = value
         elsif @stack.last == :NumberOfRoads
           @ctx[:num_roads] = value.to_i
         elsif [:lat, :lon, :Lat, :Lon, :Lat1, :Lon1, :Lat2, :Lon2].include? @stack.last
@@ -115,7 +115,6 @@ module Importers
     class << self
 
       def import_from! io
-        require 'iconv'
         require 'digest/sha2'
 
         if defined? DB
