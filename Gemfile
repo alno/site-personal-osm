@@ -1,4 +1,6 @@
-source :rubygems
+source 'https://rubygems.org'
+
+gem 'bundler', '~> 1.2.4'
 
 gem 'rake'
 gem 'rack-proxy'

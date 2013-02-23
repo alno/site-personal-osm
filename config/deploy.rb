@@ -15,9 +15,6 @@ set :whenever_command, "bundle exec whenever"
 set :whenever_identifier, defer { application }
 set :whenever_options, :roles => :db, :only => { :primary => true }
 
-require 'bundler/capistrano'
-require 'whenever/capistrano'
-
 after "deploy:update_code", roles => :app do
   run "ln -nfs #{shared_path}/config/unicorn.rb #{release_path}/config/unicorn.rb"
   run "ln -nfs #{shared_path}/config/database.yml #{release_path}/config/database.yml"
@@ -40,3 +37,6 @@ namespace :deploy do
   end
 
 end
+
+require 'bundler/capistrano'
+require 'whenever/capistrano'
