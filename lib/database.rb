@@ -1,3 +1,4 @@
+require 'yaml'
 require 'sequel'
 
 DB_CONFIG_FILE = File.open(File.expand_path('../config/database.yml', File.dirname(__FILE__)))
