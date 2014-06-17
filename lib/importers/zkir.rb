@@ -61,7 +61,11 @@ module Importers
         elsif @stack.last == :NumberOfRoads
           @ctx[:num_roads] = value.to_i
         elsif [:lat, :lon, :Lat, :Lon, :Lat1, :Lon1, :Lat2, :Lon2].include? @stack.last
-          @ctx[@stack.last.to_s.downcase.to_sym] = value.to_f
+          if @ctx
+            @ctx[@stack.last.to_s.downcase.to_sym] = value.to_f
+          else
+            #puts "Unknown error node: #{@stack.inspect}"
+          end
         else
           #puts "Unknown text value in #{@stack.inspect}: #{value}"
         end
